@@ -1,0 +1,15 @@
+{
+  "Visibility of system status": {
+    "verdict": "Good",
+    "why": "Progress indicators are present and clear.",
+    "fix": []
+  },
+  "Match between system and the real world": {
+    "verdict": "Needs improvement",
+    "why": "Terminology is inconsistent with user expectations.",
+    "fix": [
+      "Use simpler language",
+      "Align labels to user mental model"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+gradio
+pillow
+pyyaml
+tqdm
+reportlab
+pytest
+llama-cpp-python
+# optional:
+# torch
+# transformers
+# accelerate
+# bitsandbytes

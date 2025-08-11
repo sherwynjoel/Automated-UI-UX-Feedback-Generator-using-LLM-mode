@@ -1,0 +1,5 @@
+model_backend: "mock"   # options: llama_cpp | mock | pytorch
+device: "cpu"
+model_path: "models/bakllava.Q4_K_M.gguf"   # or path to model dir/file
+max_tokens: 512
+port: 8000
