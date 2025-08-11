@@ -11,6 +11,13 @@ feedback-generator/
 │── requirements.txt                  # Python dependencies
 │── README.md                         # Project documentation
 
+Features
+- Runs fully **offline** using BakLLaVA LLM
+- Accepts **UI screenshots** as input
+- Provides heuristic-based feedback
+- Generates **PDF & JSON reports**
+- Private and secure — no data sent to the cloud
+
 Clone the repository
 git clone https://github.com/sherwynjoel/Automated-UI-UX-Feedback-Generator-using-LLM-mode.git
 cd Automated-UI-UX-Feedback-Generator-using-LLM-mode
@@ -28,6 +35,7 @@ source .venv/bin/activate   # For Mac/Linux
 
  Run the app
  python feedback_generator_app.py
+
 
 
 
