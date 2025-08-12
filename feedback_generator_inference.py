@@ -1,8 +1,6 @@
 # feedback_generator_inference.py
-import os
+import os, io, json, uuid
 from PIL import Image
-import uuid
-import json
 from feedback_generator_heuristics import heuristics_prompt_block
 
 OUTPUTS_DIR = "outputs"
@@ -19,27 +17,29 @@ def preprocess_and_save_image(pil_image, max_size=1024):
     return filename
 
 def build_prompt_for_model(image_path):
-    # NOTE: many multimodal wrappers expect image tensors, not file paths.
-    # This prompt is a generic instruction for *text-only* llama backends.
-    # When you integrate the real BakLLaVA multimodal loader, pass the image tensors per that loader's API.
     intro = heuristics_prompt_block()
-    extra = f"\n\nScreenshot file path: {image_path}\n\nDescribe the UI in a few short sentences, then produce the requested JSON."
+    extra = f"\n\nScreenshot file path: {image_path}\n\nDescribe the UI in short, then produce JSON keyed by the heuristics."
     return intro + extra
 
 def analyze_image(pil_image, model, as_json=True):
     """
-    pil_image: PIL.Image
-    model: object with a .generate(prompt) -> str
+    Returns: dict: { "result": <parsed-json-or-raw>, "screenshot_path": <path> }
     """
+    # save/resize image
     image_path = preprocess_and_save_image(pil_image)
+
+    # build prompt and call model
     prompt = build_prompt_for_model(image_path)
-    raw = model.generate(prompt)
-    # Try to parse JSON-like output; if parsing fails, return raw text.
-    if as_json:
-        try:
-            parsed = json.loads(raw)
-            return parsed
-        except Exception:
-            return {"raw": raw}
-    else:
-        return raw
+    raw = model.generate(prompt)  # assumes model.generate returns str
+
+    # parse JSON if possible
+    parsed = None
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        # attempt to extract JSON substring — fallback to raw
+        parsed = {"raw": raw}
+
+    # ensure result is a dict (heuristics dict expected)
+    result = parsed if isinstance(parsed, dict) else {"raw": str(parsed)}
+    return {"result": result, "screenshot_path": image_path}

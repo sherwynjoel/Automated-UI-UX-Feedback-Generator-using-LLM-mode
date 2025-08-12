@@ -1,0 +1,8 @@
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
+pdfmetrics.registerFont(TTFont('DejaVu', 'assets/fonts/DejaVuSans.ttf'))
+
+# Then in styles:
+styles['Normal'].fontName = 'DejaVu'
+styles['Title'].fontName = 'DejaVu'

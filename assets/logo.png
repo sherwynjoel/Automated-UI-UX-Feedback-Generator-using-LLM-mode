@@ -1,0 +1,4 @@
+from reportlab.platypus import Image
+
+logo = Image("assets/logo.png", width=80, height=80)  # size in points
+elements.append(logo)
