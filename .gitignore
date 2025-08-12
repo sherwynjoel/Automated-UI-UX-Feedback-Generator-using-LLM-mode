@@ -1,0 +1,13 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Models and large outputs
+models/
+*.gguf
+*.bin
+
+# Outputs, logs, local files
+outputs/
+*.log
