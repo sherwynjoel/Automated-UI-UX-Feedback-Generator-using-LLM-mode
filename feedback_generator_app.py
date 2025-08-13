@@ -5,6 +5,7 @@ import uuid
 from feedback_generator_model import load_model_from_config, load_config
 from feedback_generator_inference import analyze_image
 from feedback_generator_utils import write_json_to_file, save_report_pdf
+from feedback_generator_enrich import enrich_feedback, NIELSEN_10  # added NIELSEN_10
 
 # Create outputs folder if not exists
 os.makedirs("outputs", exist_ok=True)
@@ -17,6 +18,7 @@ model = load_model_from_config(cfg)
 
 def run_feedback(pil_img):
     print("✅ Received image, running analysis...")
+
     try:
         analysis_result = analyze_image(pil_img, model, as_json=True)
     except Exception as e:
@@ -24,13 +26,21 @@ def run_feedback(pil_img):
 
     print("✅ Analysis done")
 
-    # Make sure output is in correct format
+    # Get JSON result
     out_json = analysis_result.get("result", analysis_result)
     if not isinstance(out_json, dict):
         return "❌ Error: Model output is not a dictionary — PDF export aborted."
 
+    # ✅ Enrich feedback to ensure all heuristics & minimum fixes
+    out_json = enrich_feedback(
+        out_json,
+        min_fixes_per=3,  # guarantee at least 3 fixes per heuristic
+        enforce_all_heuristics=True
+    )
+
     screenshot_path = analysis_result.get("screenshot_path", None)
 
+    # File naming
     name = f"report_{uuid.uuid4().hex[:8]}"
     json_path = os.path.join("outputs", name + ".json")
     pdf_path = os.path.join("outputs", name + ".pdf")
@@ -44,13 +54,12 @@ def run_feedback(pil_img):
     try:
         print("💾 Saving PDF...")
         save_report_pdf(
-        out_json,
-        pdf_path,
-        screenshot_path=screenshot_path,
-        logo_path=None,  # Disable logo
-        font_path="assets/fonts/DejaVuSans.ttf"
-    )
-
+            out_json,
+            pdf_path,
+            screenshot_path=screenshot_path,
+            logo_path=None,  # Disable logo
+            font_path="assets/fonts/DejaVuSans.ttf"
+        )
     except Exception as e:
         return f"❌ Error saving PDF: {e}"
 
