@@ -1,3 +1,7 @@
+ python feedback_generator_app.py
+
+
+
 feedback-generator/
 │── feedback_generator_app.py        # Main app entry point (Gradio UI)
 │── feedback_generator_model.py      # Loads & runs LLM
@@ -35,6 +39,7 @@ source .venv/bin/activate   # For Mac/Linux
 
  Run the app
  python feedback_generator_app.py
+
 
 
 
